@@ -1,25 +1,55 @@
-import logo from './logo.svg';
-import './App.css';
+import React,{useState,useEffect} from 'react'
+import axios from 'axios'
+import BootstrapTable  from 'react-bootstrap-table-next'
+import PaginationFactory from 'react-bootstrap-table2-paginator'
+import *as ReactBootstrap from 'react-bootstrap'
+import paginationFactory from 'react-bootstrap-table2-paginator'
 
 function App() {
+  const [players, setplayers] = useState([])
+  const [loading, setloading] = useState(false)
+ const getPlayerData=async()=>{
+    //  try {
+    //  const data=  await axios.get("https://nba-players.herokuapp.com/players-stats")
+    //     console.log(data)
+    //  } catch (error) {
+    //     console.log(error)
+    //  }
+   try {
+      axios.get('https://nba-players.herokuapp.com/players-stats')
+    .then((response)=>{
+      setplayers(response.data)
+      console.log(players)
+    })
+   } catch (error) {
+     console.log(error)
+   }
+   
+ }
+const columns=[
+  {dataField:"name" ,text:"Name"},
+ {dataField:"team_acronym" ,text:"Bro"},
+  {dataField:"team_name" ,text:"Team"}
+]
+
+  useEffect(() => {
+      getPlayerData()
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <>
+   <div>
+     <BootstrapTable
+      keyField="name"
+      data={players}
+      columns={columns}
+      pagination={paginationFactory()}
+     
+     />
+     
+   </div>
+    </>
+  )
 }
 
-export default App;
+export default App
